@@ -2,6 +2,8 @@
 
 This project simulates a dashboard to see realtime users login in and out of a chat room.
 
+<img alt="" width={400} src="./screenshot.png" />
+
 ## Client
 
 **Vite + React + TailwindCSS**
