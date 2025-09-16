@@ -1,5 +1,5 @@
 // The generated data will be an array of users
-
+import { events } from '../configuration/events.ts'
 import { type DefaultEventsMap, Server } from "socket.io";
 
 interface User {
@@ -50,7 +50,7 @@ export class ConnectedUsers {
                 this.#users = this.getLoggedUsers().filter(
                     (_, i) => i !== userToLogOutIndex
                 );
-                this.io.emit("user-logged-out", loggedOutUser);
+                this.io.emit(events.USER_LOGGED_OUT, loggedOutUser);
             }
             setTimeout(() => this.logOutUser(), timeToNextLogout);
         } catch (e) {
@@ -66,11 +66,13 @@ export class ConnectedUsers {
             const loggedOutUsers = MOCKED_USERS.filter(
                 (user) => !this.getLoggedUsers().some((u) => u.id === user.id)
             );
-            const userToLogInIndex = Math.floor(
-                Math.random() * loggedOutUsers.length
-            );
-            this.#users.push(loggedOutUsers[userToLogInIndex]);
-            this.io.emit("user-logged-in", loggedOutUsers[userToLogInIndex]);
+            if (loggedOutUsers.length > 0) {
+                const userToLogInIndex = Math.floor(
+                    Math.random() * loggedOutUsers.length
+                );
+                this.#users.push(loggedOutUsers[userToLogInIndex]);
+                this.io.emit(events.USER_LOGGED_IN, loggedOutUsers[userToLogInIndex]);
+            }
             setTimeout(() => this.logInUser(), timeToNextLogIn);
         } catch (e) {
             console.error(e);

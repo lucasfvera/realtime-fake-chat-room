@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { Server } from 'socket.io';
 import { ConnectedUsers } from './utils/api.ts';
+import { events } from './configuration/events.ts'
 
 const app = express();
 const server = createServer(app);
@@ -34,9 +35,14 @@ io.on('connection', async (socket) => {
     console.log('connection established id: ', socket.id);
     // console.log("logged in users", UsersLogged.getLoggedUsers());
     openConnections.push(socket.id);
-    io.emit('logged-in-users', { users: UsersLogged.getLoggedUsers() });
 
-    socket.on('disconnect', () => {
+    socket.on(events.LOGGED_IN_USERS, (cb) => {
+        console.log("Received event")
+        // io.emit(events.LOGGED_IN_USERS, { users: UsersLogged.getLoggedUsers() })
+        cb({ users: UsersLogged.getLoggedUsers() })
+    });
+
+    socket.on(events.DISCONNECT, () => {
         openConnections = openConnections.filter((u) => u !== socket.id);
         console.log('connection ended id: ', socket.id);
     });
