@@ -22,17 +22,21 @@ export const Dashboard = () => {
             setConnectedUsers(data.users ?? []);
 
         });
-        // socket.on(events.LOGGED_IN_USERS, (data: { users: User[] }) => {
-        //     console.log(data);
-        // })
-        socket.on(events.USER_LOGGED_OUT, (data: User) => {
+        const onUserLoggedOut = (data: User) => {
             setConnectedUsers((prev) =>
                 prev.filter((user) => user.id !== data.id)
             );
-        });
-        socket.on(events.USER_LOGGED_IN, (data: User) => {
+        }
+        const onUserLoggedIn = (data: User) => {
             setConnectedUsers((prev) => [...prev, data]);
-        });
+        }
+        socket.on(events.USER_LOGGED_OUT, onUserLoggedOut);
+        socket.on(events.USER_LOGGED_IN, onUserLoggedIn);
+
+        return () => {
+            socket.off(events.USER_LOGGED_OUT, onUserLoggedOut);
+            socket.off(events.USER_LOGGED_IN, onUserLoggedIn);
+        }
     }, [socket]);
 
     return (
