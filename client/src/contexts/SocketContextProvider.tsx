@@ -13,7 +13,7 @@ export const SocketContextProvider = ({
         const newSocket = io(import.meta.env.VITE_WEBSOCKET_URL);
         setSocket(newSocket);
         return () => {
-            newSocket.close();
+            newSocket.disconnect();
         };
     }, []);
 
