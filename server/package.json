@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon index.js",
+        "start": "node --watch index.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -17,6 +17,7 @@
         "socket.io": "^4.8.1"
     },
     "devDependencies": {
+        "@types/express": "^5.0.3",
         "nodemon": "^3.1.10"
     }
 }

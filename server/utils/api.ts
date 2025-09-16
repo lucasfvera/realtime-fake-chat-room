@@ -1,17 +1,13 @@
 // The generated data will be an array of users
 
-/**
- * @typedef User
- * @property {string} name
- * @property {string} id
- */
+import { type DefaultEventsMap, Server } from "socket.io";
 
-/**
- *
- * @param {number} initialUsers
- * @returns {Promise<User[]>}
- */
-export const generateRandomData = async (initialUsers) => {
+interface User {
+    name: string,
+    id: string
+}
+
+export const generateRandomData = async (initialUsers: number): Promise<User[]> => {
     let loggedInUsers = [];
     for (let index = 0; index < initialUsers; index++) {
         const newUser = MOCKED_USERS[index];
@@ -24,9 +20,10 @@ export const generateRandomData = async (initialUsers) => {
 };
 
 export class ConnectedUsers {
-    #users = [];
+    #users: User[] = [];
+    io;
 
-    constructor(io) {
+    constructor(io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) {
         this.io = io;
     }
 
