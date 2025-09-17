@@ -11,17 +11,24 @@ interface User {
 export const Dashboard = () => {
     const { socket } = useSocketContext();
     const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
+    const [isLoading, setIsLoading] = useState(false)
+
+    const resetApiHandler = () => {
+        setIsLoading(true)
+        socket?.emit(events.RESTART_LOGGED_USERS, (data: { users: User[] }) => {
+            setConnectedUsers(data.users ?? []);
+            setIsLoading(false)
+        })
+    }
 
     useEffect(() => {
-        console.log("Running effect in dashboard")
         if (!socket) return;
 
-        console.log("Emitting event")
         socket.emit(events.LOGGED_IN_USERS, (data: { users: User[] }) => {
             console.log("Ack received")
             setConnectedUsers(data.users ?? []);
-
         });
+
         const onUserLoggedOut = (data: User) => {
             setConnectedUsers((prev) =>
                 prev.filter((user) => user.id !== data.id)
@@ -43,7 +50,7 @@ export const Dashboard = () => {
         <>
             <div className="flex justify-between">
                 <div className="text-lg font-bold">Users</div>
-                <button>Reset api</button>
+                <button className="bg-red-800 text-gray-300 font-bold hover:bg-red-700 rounded p-2 cursor-pointer disabled:bg-gray-500" type="button" disabled={isLoading} onClick={resetApiHandler}>{isLoading ? "Resetting" : "Reset api"}</button>
                 <div>
                     <span
                         className={`inline-block w-[12px] h-[12px] rounded-2xl ${connectedUsers.length > 0
@@ -54,11 +61,14 @@ export const Dashboard = () => {
                     {connectedUsers.length} users online
                 </div>
             </div>
-            <ul className="flex flex-col min-h-0 gap-4 overflow-auto">
-                {connectedUsers.map((user) => (
-                    <li className="bg-amber-50 rounded w-full p-2" key={user.id}>{user.name}</li>
-                ))}
-            </ul>
+            {
+                isLoading ? Array(5).fill(undefined).map(() => <div className="bg-gray-50 rounded w-full p-2 animate-pulse h-10"></div>) :
+                    <ul className="flex flex-col min-h-0 gap-4 overflow-auto">
+                        {connectedUsers.map((user) => (
+                            <li className="bg-amber-50 rounded w-full p-2" key={user.id}>{user.name}</li>
+                        ))}
+                    </ul>
+            }
         </>
     );
 };

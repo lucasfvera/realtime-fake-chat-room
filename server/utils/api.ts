@@ -39,7 +39,6 @@ export class ConnectedUsers {
 
     logOutUser() {
         const timeToNextLogout = Math.floor(Math.random() * 5000) + 2000;
-        // console.log("login out: " + timeToNextLogout / 1000 + " seconds");
 
         const userToLogOutIndex = Math.floor(
             Math.random() * this.getLoggedUsers().length
@@ -61,7 +60,7 @@ export class ConnectedUsers {
 
     logInUser() {
         const timeToNextLogIn = Math.floor(Math.random() * 5000);
-        // console.log("login in: " + timeToNextLogIn / 1000 + " seconds");
+
         try {
             const loggedOutUsers = MOCKED_USERS.filter(
                 (user) => !this.getLoggedUsers().some((u) => u.id === user.id)

@@ -5,4 +5,5 @@ export const events = {
     DISCONNECT: 'disconnect',
     USER_LOGGED_IN: 'user-logged-in',
     USER_LOGGED_OUT: 'user-logged-out',
+    RESTART_LOGGED_USERS: 'restart-logged-users'
 };

@@ -37,10 +37,14 @@ io.on('connection', async (socket) => {
     openConnections.push(socket.id);
 
     socket.on(events.LOGGED_IN_USERS, (cb) => {
-        console.log("Received event")
-        // io.emit(events.LOGGED_IN_USERS, { users: UsersLogged.getLoggedUsers() })
         cb({ users: UsersLogged.getLoggedUsers() })
     });
+
+    socket.on(events.RESTART_LOGGED_USERS, (cb) => {
+        UsersLogged.generateInitialUsers().then(() =>
+            cb && cb({ users: UsersLogged.getLoggedUsers() })
+        );
+    })
 
     socket.on(events.DISCONNECT, () => {
         openConnections = openConnections.filter((u) => u !== socket.id);
